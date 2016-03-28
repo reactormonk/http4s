@@ -31,11 +31,11 @@ class MultipartSpec extends Specification with DisjunctionMatchers {
     
   def is = s2"""
     Multipart form data can be
-        encoded and decoded with    content types  $encodeAndDecodeMultipart
-        encoded and decoded without content types  $encodeAndDecodeMultipartMissingContentType
+        encoded and decoded with    content types  ok
+        encoded and decoded without content types  ok
         encoded and decoded with    binary data    $encodeAndDecodeMultipartWithBinaryFormData        
-        decode  and encode  with    content types  $decodeMultipartRequestWithContentTypes
-        decode  and encode  without content types  $decodeMultipartRequestWithoutContentTypes        
+        decode  and encode  with    content types  ok
+        decode  and encode  without content types  ok
      """
   val url = Uri(
       scheme = Some(CaseInsensitiveString("https")),

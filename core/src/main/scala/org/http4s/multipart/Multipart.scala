@@ -37,12 +37,10 @@ object Part {
     fileData(name, resource.getPath.split("/").last, resource.openStream(), headers:_*)
 
   private def fileData(name: String, filename: String, in: => InputStream, headers: Header*): Part = {
-    // TODO Reading the whole file into one chunk is abominable
-    val body = BitVector.fromInputStream(in).toByteVector
     Part(`Content-Disposition`("form-data", Map("name" -> name, "filename" -> filename)) +:
            Header("Content-Transfer-Encoding", "binary") +:
            headers,
-         constant(8192).toSource through chunkR(in))
+         constant(8192).toSource through chunkR(in) observe(scalaz.stream.io.stdOutLines.contramap(_.length.toString)))
   }
 }
 

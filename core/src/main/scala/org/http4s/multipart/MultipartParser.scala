@@ -70,7 +70,6 @@ object MultipartParser {
             halt
           case (line, _) =>
             fail(InvalidMessageBodyFailure(s"Expected multipart boundary, got: $line"))
-            halt
         }
       }
 
@@ -130,6 +129,7 @@ object MultipartParser {
 
       def pre(bv: ByteVector): Process1[ByteVector, (ByteVector, Option[ByteVector])] = {
         val idx = bv indexOfSlice expected
+
         if (idx >= 0) {
           // if we find the terminator *within* the chunk, we need to just trip and be done
           // the +2 consumes the CRLF before the multipart boundary
@@ -146,8 +146,8 @@ object MultipartParser {
         if (remainder.isEmpty) {
           halt
         } else {
-          // the "or" is basically an error case, but whatever
-          receive1Or[ByteVector, (ByteVector, Option[ByteVector])](emit((buffer, None))) { bv =>
+          receive1Or[ByteVector, (ByteVector, Option[ByteVector])](
+            fail(new InvalidMessageBodyFailure("Part was not terminated"))) { bv =>
             val (remFront, remBack) = remainder splitAt bv.length
 
             if (bv startsWith remFront)     // there might be trailing junk

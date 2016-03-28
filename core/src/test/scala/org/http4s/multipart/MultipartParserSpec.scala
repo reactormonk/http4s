@@ -155,7 +155,7 @@ object MultipartParserSpec extends Specification {
       bv.decodeAscii mustEqual Right("bar")
     }
 
-    "not go space trucking without an end line" in {
+    "fail with an InvalidMessageBodyFailure without an end line" in {
       val unprocessedInput = """--_5PHqf8_Pl1FCzBuT5o_mVZg36k67UYI
         |Content-Disposition: form-data; name="upload"; filename="integration.txt"
         |Content-Type: application/octet-stream
