@@ -81,7 +81,7 @@ object MultipartParser {
             (headers, tail2) = headerPair
             spacePair <- receiveCollapsedLine(tail2)
             (chomp, tail3) = spacePair // eat the space between header and content
-            part <- emit(-\/(headers)) ++ body(tail3, expected).flatMap {
+            part <- emit(-\/(headers)) ++ body(tail3.map(_.compact), expected).flatMap {
               case (chunk, None) =>
                 emit(\/-(chunk))
               case (chunk, some @ Some(remainder)) =>
@@ -128,8 +128,7 @@ object MultipartParser {
       }
 
       def pre(bv: ByteVector): Process1[ByteVector, (ByteVector, Option[ByteVector])] = {
-        val idx = bv indexOfSlice expected
-
+        val idx = bv indexOfSlice (expected.take(10))
         if (idx >= 0) {
           // if we find the terminator *within* the chunk, we need to just trip and be done
           // the +2 consumes the CRLF before the multipart boundary
