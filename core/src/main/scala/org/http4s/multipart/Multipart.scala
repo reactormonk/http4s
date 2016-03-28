@@ -33,7 +33,7 @@ object Part {
   def fileData(name: String, file: File, headers: Header*): Part =
     fileData(name, file.getName, new FileInputStream(file), headers:_*)
 
-  def fileData(name: String, resource: URL, headers: Header*): Part = {
+  def fileData(name: String, resource: URL, headers: Header*): Part =
     fileData(name, resource.getPath.split("/").last, resource.openStream(), headers:_*)
 
   private def fileData(name: String, filename: String, in: => InputStream, headers: Header*): Part = {
